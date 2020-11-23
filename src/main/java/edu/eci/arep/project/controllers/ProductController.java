@@ -1,8 +1,6 @@
 package edu.eci.arep.project.controllers;
-
-import edu.eci.arep.project.exception.ProductException;
 import edu.eci.arep.project.model.Product;
-import edu.eci.arep.project.services.ProductServices;
+import edu.eci.arep.project.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,37 +13,31 @@ import java.util.List;
 @RequestMapping("products")
 public class ProductController {
 
-    private final ProductServices productServices;
+    private final ProductRepository productServices;
 
     @Autowired
-    public ProductController(ProductServices productServices) {
+    public ProductController(ProductRepository productServices) {
         this.productServices = productServices;
     }
 
-    @RequestMapping(value = "/",method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public List<Product> getProducts()
     {
         return productServices.getProducts();
     }
 
-    @RequestMapping(value = "/{id}",method = RequestMethod.GET)
-    public ResponseEntity<?> getProductById(@PathVariable String id)
-    {
-        try {
-            return new ResponseEntity<>(productServices.getProductById(id), HttpStatus.OK);
-        } catch (ProductException e) {
-            return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
-        }
-    }
-
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> addProduct(@RequestBody Product product)
     {
-        try {
-            productServices.addProduct(product);
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (ProductException e) {
-            return new ResponseEntity<>(e.getMessage(),HttpStatus.CONFLICT);
-        }
+        productServices.insertIntoDynamoDB(product);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+    @RequestMapping(value = "/{id}",method = RequestMethod.GET)
+    public ResponseEntity<Product> getProductById(@RequestParam String id)
+    {
+        Product product = productServices.getProductById(id);
+        return new ResponseEntity<Product>(product,HttpStatus.OK);
+    }
+
 }
