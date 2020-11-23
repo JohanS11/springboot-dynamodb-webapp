@@ -21,4 +21,9 @@ public class ProductRepository{
     public void insertIntoDynamoDB(Product product) {
         mapper.save(product);
     }
+
+    public void getProducts()
+    {
+        return mapper.scan()
+    }
 }
