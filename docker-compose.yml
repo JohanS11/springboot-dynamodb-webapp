@@ -1,0 +1,12 @@
+version: '2'
+
+
+services:
+  web:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: chan1100/arepproject:latest
+    ports:
+      - "8080:6000"
+    restart: always
