@@ -7,6 +7,9 @@ services:
       context: .
       dockerfile: Dockerfile
     image: chan1100/arepproject:latest
+    environment:
+      - AWS_ACCESS_KEY_ID=AKIAUMPTI4NIBRPSERP2
+      - AWS_SECRET_ACCESS_KEY=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
     ports:
-      - "8080:6000"
+      - "8080:8080"
     restart: always
